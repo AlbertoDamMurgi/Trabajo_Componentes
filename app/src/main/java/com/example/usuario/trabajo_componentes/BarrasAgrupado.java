@@ -16,7 +16,7 @@ import android.view.View;
 
 public class BarrasAgrupado extends View{
 
-    private Paint mPaintEjeX,mPaintEjeY;
+    private Paint mPaintEjeX,mPaintEjeY,mPaintNumerosY;
     private int width,height;
 
     public BarrasAgrupado(Context context, @Nullable AttributeSet attrs) {
@@ -65,6 +65,11 @@ public class BarrasAgrupado extends View{
         mPaintEjeY.setStyle(Paint.Style.FILL_AND_STROKE);
         mPaintEjeY.setStrokeWidth(4F);
 
+        mPaintNumerosY = new Paint(Paint.ANTI_ALIAS_FLAG);
+        mPaintNumerosY.setColor(Color.BLACK);
+        mPaintNumerosY.setStyle(Paint.Style.FILL_AND_STROKE);
+        mPaintNumerosY.setTextSize(50);
+
     }
 
     private void pintarEjes(Canvas canvas) {
@@ -81,10 +86,10 @@ public class BarrasAgrupado extends View{
     private void anios(Canvas canvas) {
 
         int total = width-150-getPaddingLeft();
+        total = total/5;
 
-        for (int i = 0; i < Bd.grupos.size() ; i++) {
 
-        }
+
 
     }
 
@@ -96,7 +101,17 @@ public class BarrasAgrupado extends View{
 
     private void ejeY(Canvas canvas) {
 
-        canvas.drawLine(getPaddingLeft()+150,getPaddingTop()+350,getPaddingLeft()+150,height-getPaddingBottom()-60,mPaintEjeY);
+        canvas.drawLine(getPaddingLeft()+150,getPaddingTop()+250,getPaddingLeft()+150,height-getPaddingBottom()-60,mPaintEjeY);
+        int espacio = width/6;
+        int cont = 0;
+        for (int i = 0; i < width ; i=espacio+i) {
+
+            canvas.drawText(String.valueOf(cont),getPaddingLeft()+20,height-getPaddingBottom()-i-60,mPaintNumerosY);
+            canvas.drawLine(getPaddingLeft()+150+i,getPaddingTop()+250,getPaddingLeft()+150+i,height-getPaddingBottom()-60,mPaintEjeY);
+
+            cont+=20;
+
+        }
 
     }
 }
