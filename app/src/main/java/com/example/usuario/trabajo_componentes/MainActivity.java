@@ -8,11 +8,12 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
 
         if(Bd.grupos.isEmpty()){
             Bd.rellenarDatos();
         }
+        setContentView(R.layout.activity_main);
+
 
     }
 }

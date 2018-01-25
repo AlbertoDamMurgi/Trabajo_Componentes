@@ -1,5 +1,7 @@
 package com.example.usuario.trabajo_componentes;
 
+import android.graphics.Color;
+
 import java.util.ArrayList;
 
 /**
@@ -11,11 +13,12 @@ public class Bd {
     public static ArrayList<Grupo> grupos = new ArrayList<>();
 
     public static void rellenarDatos(){
+
         Barra[] barras = new Barra[3];
 
-        barras[0] = new Barra(android.R.color.darker_gray,40);
-        barras[1] = new Barra(android.R.color.holo_red_dark,70);
-        barras[2] = new Barra(android.R.color.holo_green_light,30);
+        barras[0] = new Barra(R.color.rojo,40);
+        barras[1] = new Barra(R.color.azul,70);
+        barras[2] = new Barra(R.color.verde,30);
 
 
         grupos.add(new Grupo(barras,1990));
