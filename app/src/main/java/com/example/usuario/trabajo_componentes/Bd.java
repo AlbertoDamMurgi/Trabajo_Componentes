@@ -20,16 +20,16 @@ public class Bd {
         Barra[] barras3 = new Barra[3];
         Barra[] barras4 = new Barra[3];
 
-        barras[0] = new Barra(R.color.rojo,40);
-        barras[1] = new Barra(R.color.azul,70);
-        barras[2] = new Barra(R.color.verde,30);
+        barras[0] = new Barra(R.color.rojo,40,"Iberdrola");
+        barras[1] = new Barra(R.color.azul,70,"Endesa");
+        barras[2] = new Barra(R.color.verde,30,"Robo S.A");
 
         barras1[0] = new Barra(R.color.rojo,17);
         barras1[1] = new Barra(R.color.azul,89);
         barras1[2] = new Barra(R.color.verde,44);
 
         barras2[0] = new Barra(R.color.rojo,87);
-        barras2[1] = new Barra(R.color.azul,35);
+        barras2[1] = new Barra(R.color.azul,99);
         barras2[2] = new Barra(R.color.verde,48);
 
         barras3[0] = new Barra(R.color.rojo,68);

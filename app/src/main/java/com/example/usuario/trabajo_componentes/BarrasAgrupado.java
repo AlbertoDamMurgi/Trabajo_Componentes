@@ -20,7 +20,7 @@ import android.view.View;
 
 public class BarrasAgrupado extends View{
 
-    private Paint mPaintEjeX,mPaintEjeY,mPaintNumerosY,barra1,barra2,barra3;
+    private Paint mPaintEjeX,mPaintEjeY,mPaintNumerosY,barra1,barra2,barra3,mPaintEmpresas;
     private int width,height;
 
     public BarrasAgrupado(Context context, @Nullable AttributeSet attrs) {
@@ -74,18 +74,23 @@ public class BarrasAgrupado extends View{
         mPaintNumerosY.setStyle(Paint.Style.FILL_AND_STROKE);
         mPaintNumerosY.setTextSize(50);
 
+        mPaintEmpresas = new Paint(Paint.ANTI_ALIAS_FLAG);
+
+        mPaintEmpresas.setStyle(Paint.Style.FILL_AND_STROKE);
+        mPaintEmpresas.setTextSize(50);
+
         barra1 = new Paint(Paint.ANTI_ALIAS_FLAG);
-        barra1.setColor(Color.GREEN);
+        barra1.setColor(Bd.grupos.get(0).getBarras()[0].getColor());
         barra1.setStyle(Paint.Style.FILL_AND_STROKE);
 
 
         barra2 = new Paint(Paint.ANTI_ALIAS_FLAG);
-        barra2.setColor(Color.RED);
+        barra2.setColor(Bd.grupos.get(0).getBarras()[1].getColor());
         barra2.setStyle(Paint.Style.FILL_AND_STROKE);
 
 
         barra3 = new Paint(Paint.ANTI_ALIAS_FLAG);
-        barra3.setColor(Color.BLUE);
+        barra3.setColor(Bd.grupos.get(0).getBarras()[2].getColor());
         barra3.setStyle(Paint.Style.FILL_AND_STROKE);
 
     }
@@ -96,16 +101,42 @@ public class BarrasAgrupado extends View{
 
         ejeY(canvas);
 
-        //anios(canvas);
+        anios(canvas);
 
         barras(canvas);
+
+        empresas(canvas);
+
+    }
+
+    private void empresas(Canvas canvas) {
+        int cont=0;
+
+        for (int i = 0; i < 3; i++) {
+            if(i==0){
+                canvas.drawRect(150, 150+cont, 80, 80+cont,barra1);
+                mPaintEmpresas.setColor(Bd.grupos.get(0).getBarras()[i].getColor());
+                canvas.drawText(Bd.grupos.get(0).getBarras()[i].getNombre(),180,130+cont,mPaintEmpresas);
+            }else if(i==1) {
+                mPaintEmpresas.setColor(Bd.grupos.get(0).getBarras()[i].getColor());
+                canvas.drawRect(150, 150 + cont, 80, 80 + cont, barra2);
+                canvas.drawText(Bd.grupos.get(0).getBarras()[i].getNombre(),180,130+cont,mPaintEmpresas);
+            }else{
+                mPaintEmpresas.setColor(Bd.grupos.get(0).getBarras()[i].getColor());
+                canvas.drawRect(150, 150 + cont, 80, 80 + cont, barra3);
+                canvas.drawText(Bd.grupos.get(0).getBarras()[i].getNombre(),180,130+cont,mPaintEmpresas);
+            }
+            cont+=150;
+        }
+
+
 
     }
 
     private void barras(Canvas canvas) {
         int espacio = width/6;
         int cont = 0;
-        Log.e("espacio",String.valueOf(espacio));
+
         for (int i = 0; i < width ; i=espacio+i) {
 
             if(cont<5) {
@@ -122,9 +153,23 @@ public class BarrasAgrupado extends View{
     }
 
     private void anios(Canvas canvas) {
+        int cont = 0;
 
-        int total = width-150-getPaddingLeft();
-        total = total/5;
+        int total = width/6;
+        int nuevotop = getPaddingTop() + (width / 2);
+
+        Log.e("total",String.valueOf(total));
+
+
+
+        for (int i = 0; i < width ; i=total+i) {
+            if(cont<5) {
+                canvas.drawText(String.valueOf(Bd.grupos.get(cont).getAnio()), total + i-20, nuevotop, mPaintNumerosY);
+                cont++;
+            }
+                //canvas.drawLine(getPaddingLeft() + 150 + i, getPaddingTop() + (width / 2), getPaddingLeft() + 150 + i, height - getPaddingBottom() - 60, mPaintEjeY);
+            }
+
 
 
 
