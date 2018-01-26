@@ -2,12 +2,16 @@ package com.example.usuario.trabajo_componentes;
 
 import android.content.Context;
 import android.content.res.TypedArray;
+import android.graphics.BlurMaskFilter;
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.EmbossMaskFilter;
+import android.graphics.LinearGradient;
 import android.graphics.Paint;
 import android.support.annotation.Nullable;
 import android.util.AndroidException;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.View;
 
 /**
@@ -42,7 +46,7 @@ public class BarrasAgrupado extends View{
 
         pintarEjes(canvas);
 
-
+        barras(canvas);
     }
 
     @Override
@@ -74,13 +78,16 @@ public class BarrasAgrupado extends View{
         barra1.setColor(Color.GREEN);
         barra1.setStyle(Paint.Style.FILL_AND_STROKE);
 
+
         barra2 = new Paint(Paint.ANTI_ALIAS_FLAG);
         barra2.setColor(Color.RED);
         barra2.setStyle(Paint.Style.FILL_AND_STROKE);
 
+
         barra3 = new Paint(Paint.ANTI_ALIAS_FLAG);
         barra3.setColor(Color.BLUE);
         barra3.setStyle(Paint.Style.FILL_AND_STROKE);
+
     }
 
     private void pintarEjes(Canvas canvas) {
@@ -98,12 +105,13 @@ public class BarrasAgrupado extends View{
     private void barras(Canvas canvas) {
         int espacio = width/6;
         int cont = 0;
+        Log.e("espacio",String.valueOf(espacio));
         for (int i = 0; i < width ; i=espacio+i) {
 
             if(cont<5) {
-                canvas.drawRect(getPaddingLeft() + 150 + i,calcularTop(120), getPaddingLeft() + 150 + espacio / 3 + i, height - getPaddingBottom() - 60, barra1);
-                canvas.drawRect(getPaddingLeft() + 150 + (espacio / 3) + i, getPaddingTop() + (height / 2), getPaddingLeft() + 150 + (espacio / 3) * 2 + i, height - getPaddingBottom() - 60, barra2);
-                canvas.drawRect(getPaddingLeft() + 150 + (espacio / 3) * 2 + i, getPaddingTop() + (height / 2), getPaddingLeft() + 150 + (espacio) + i, height - getPaddingBottom() - 60, barra3);
+                canvas.drawRect(getPaddingLeft() + 150 + i,calcularTop(Bd.grupos.get(cont).getBarras()[0].getValor()), getPaddingLeft() + 150 + espacio / 3 + i, height - getPaddingBottom() - 60, barra1);
+                canvas.drawRect(getPaddingLeft() + 150 + (espacio / 3) + i, calcularTop(Bd.grupos.get(cont).getBarras()[1].getValor()), getPaddingLeft() + 150 + (espacio / 3) * 2 + i, height - getPaddingBottom() - 60, barra2);
+                canvas.drawRect(getPaddingLeft() + 150 + (espacio / 3) * 2 + i, calcularTop(Bd.grupos.get(cont).getBarras()[2].getValor()), getPaddingLeft() + 150 + (espacio) + i, height - getPaddingBottom() - 60, barra3);
             }
             cont++;
         }
@@ -125,9 +133,19 @@ public class BarrasAgrupado extends View{
 
     private float calcularTop(float valor){
 
-        float altura;
+       float altura= height - getPaddingBottom() - 60;
+        boolean primeravez=false;
 
-        altura=(valor*(getPaddingTop()+(width/2)))/100;
+        altura=altura-((width/6)*valor)/(20);
+    /*
+        if(valor<20){
+            altura=altura-((width/6)*valor)/20;
+        }else if(valor<40){
+            altura=altura-((width/6)*2*valor)/40;
+        }*/
+
+
+
 
 
         return altura;
