@@ -12,7 +12,9 @@ import android.support.annotation.Nullable;
 import android.util.AndroidException;
 import android.util.AttributeSet;
 import android.util.Log;
+import android.view.MotionEvent;
 import android.view.View;
+import android.widget.Toast;
 
 /**
  * Created by usuario on 22/01/18.
@@ -40,21 +42,83 @@ public class BarrasAgrupado extends View{
     }
 
 
+
+
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
 
         pintarEjes(canvas);
 
-        barras(canvas);
+        //barras(canvas);
     }
 
+
+    @Override
+    protected void onSizeChanged(int w, int h, int oldw, int oldh) {
+        super.onSizeChanged(w, h, oldw, oldh);
+        width=w-(getPaddingLeft()+getPaddingRight());
+        height=h-(getPaddingTop()+getPaddingBottom());
+
+        invalidate();
+    }
+/*
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
         width=MeasureSpec.getSize(widthMeasureSpec);
         height=MeasureSpec.getSize(heightMeasureSpec);
         setMeasuredDimension(width,height);
+    }
+*/
+
+    @Override
+    public boolean onTouchEvent(MotionEvent event) {
+
+        int x= (int) event.getX();
+        int y = (int) event.getY();
+
+        int eventaction = event.getAction();
+
+        switch (eventaction){
+
+            case MotionEvent.ACTION_DOWN:
+                int espacio = width/6;
+                int cont = 0;
+
+                for (int i = 0; i < width ; i=espacio+i) {
+
+                    if(cont<5) {
+                        //fila a
+                        if(x>getPaddingLeft()+150+i&&x<getPaddingLeft()+150+espacio/3+i&&y>getPaddingTop()+(width/2)){
+                            Toast.makeText(getContext(),String.valueOf(Bd.grupos.get(cont).getBarras()[0].getValor()),Toast.LENGTH_SHORT).show();
+
+
+                           // invalidate();
+                            //fila b
+                        }else if(x>getPaddingLeft()+150+(espacio/3)+i&&x<getPaddingLeft()+150+(espacio/3)*2+i&&y>getPaddingTop()+(width/2)){
+                            Toast.makeText(getContext(),String.valueOf(Bd.grupos.get(cont).getBarras()[1].getValor()),Toast.LENGTH_SHORT).show();
+                        }else if(x>getPaddingLeft()+150+(espacio/3)*2+i&&x<getPaddingLeft()+150+espacio+i&&y>getPaddingTop()+(width/2)){
+                            //fila c
+                            Toast.makeText(getContext(),String.valueOf(Bd.grupos.get(cont).getBarras()[2].getValor()),Toast.LENGTH_SHORT).show();
+                        }
+
+
+                    }
+                    cont++;
+                }
+                break;
+            case MotionEvent.ACTION_UP:
+                break;
+            case MotionEvent.ACTION_MOVE:
+                break;
+
+
+
+        }
+
+
+        return true;
     }
 
     private void init(){
@@ -65,7 +129,7 @@ public class BarrasAgrupado extends View{
         mPaintEjeX.setStrokeWidth(2F);
 
         mPaintEjeY = new Paint(Paint.ANTI_ALIAS_FLAG);
-        mPaintEjeY.setColor(getResources().getColor(android.R.color.darker_gray));
+        mPaintEjeY.setColor(getResources().getColor(R.color.negro));
         mPaintEjeY.setStyle(Paint.Style.FILL_AND_STROKE);
         mPaintEjeY.setStrokeWidth(4F);
 
@@ -80,17 +144,19 @@ public class BarrasAgrupado extends View{
         mPaintEmpresas.setTextSize(50);
 
         barra1 = new Paint(Paint.ANTI_ALIAS_FLAG);
-        barra1.setColor(Bd.grupos.get(0).getBarras()[0].getColor());
+        barra1.setColor(getResources().getColor(Bd.grupos.get(0).getBarras()[0].getColor()));
         barra1.setStyle(Paint.Style.FILL_AND_STROKE);
+        //barra1.setMaskFilter(new EmbossMaskFilter(new float[] {1, 1, 1}, .4f, 6f, 3.5f));
 
 
         barra2 = new Paint(Paint.ANTI_ALIAS_FLAG);
-        barra2.setColor(Bd.grupos.get(0).getBarras()[1].getColor());
+        barra2.setColor(getResources().getColor(Bd.grupos.get(0).getBarras()[1].getColor()));
+
         barra2.setStyle(Paint.Style.FILL_AND_STROKE);
 
 
         barra3 = new Paint(Paint.ANTI_ALIAS_FLAG);
-        barra3.setColor(Bd.grupos.get(0).getBarras()[2].getColor());
+        barra3.setColor(getResources().getColor(Bd.grupos.get(0).getBarras()[2].getColor()));
         barra3.setStyle(Paint.Style.FILL_AND_STROKE);
 
     }
@@ -115,14 +181,14 @@ public class BarrasAgrupado extends View{
         for (int i = 0; i < 3; i++) {
             if(i==0){
                 canvas.drawRect(150, 150+cont, 80, 80+cont,barra1);
-                mPaintEmpresas.setColor(Bd.grupos.get(0).getBarras()[i].getColor());
+                mPaintEmpresas.setColor(getResources().getColor(Bd.grupos.get(0).getBarras()[i].getColor()));
                 canvas.drawText(Bd.grupos.get(0).getBarras()[i].getNombre(),180,130+cont,mPaintEmpresas);
             }else if(i==1) {
-                mPaintEmpresas.setColor(Bd.grupos.get(0).getBarras()[i].getColor());
+                mPaintEmpresas.setColor(getResources().getColor(Bd.grupos.get(0).getBarras()[i].getColor()));
                 canvas.drawRect(150, 150 + cont, 80, 80 + cont, barra2);
                 canvas.drawText(Bd.grupos.get(0).getBarras()[i].getNombre(),180,130+cont,mPaintEmpresas);
             }else{
-                mPaintEmpresas.setColor(Bd.grupos.get(0).getBarras()[i].getColor());
+                mPaintEmpresas.setColor(getResources().getColor(Bd.grupos.get(0).getBarras()[i].getColor()));
                 canvas.drawRect(150, 150 + cont, 80, 80 + cont, barra3);
                 canvas.drawText(Bd.grupos.get(0).getBarras()[i].getNombre(),180,130+cont,mPaintEmpresas);
             }
@@ -136,7 +202,7 @@ public class BarrasAgrupado extends View{
     private void barras(Canvas canvas) {
         int espacio = width/6;
         int cont = 0;
-
+        Log.e("pintando barras","pintando barras");
         for (int i = 0; i < width ; i=espacio+i) {
 
             if(cont<5) {
@@ -179,18 +245,9 @@ public class BarrasAgrupado extends View{
     private float calcularTop(float valor){
 
        float altura= height - getPaddingBottom() - 60;
-        boolean primeravez=false;
+
 
         altura=altura-((width/6)*valor)/(20);
-    /*
-        if(valor<20){
-            altura=altura-((width/6)*valor)/20;
-        }else if(valor<40){
-            altura=altura-((width/6)*2*valor)/40;
-        }*/
-
-
-
 
 
         return altura;
