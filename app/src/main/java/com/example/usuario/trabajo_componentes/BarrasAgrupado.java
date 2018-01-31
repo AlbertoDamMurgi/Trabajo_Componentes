@@ -24,6 +24,7 @@ public class BarrasAgrupado extends View{
 
     private Paint mPaintEjeX,mPaintEjeY,mPaintNumerosY,barra1,barra2,barra3,mPaintEmpresas;
     private int width,height;
+    private float mLeft,mBottom,mTop,mRigth;
 
     public BarrasAgrupado(Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
@@ -57,10 +58,14 @@ public class BarrasAgrupado extends View{
     @Override
     protected void onSizeChanged(int w, int h, int oldw, int oldh) {
         super.onSizeChanged(w, h, oldw, oldh);
-        width=w-(getPaddingLeft()+getPaddingRight());
-        height=h-(getPaddingTop()+getPaddingBottom());
 
-        invalidate();
+        width=w;
+        height=h;
+        mLeft = getPaddingLeft()+150;
+        mBottom = h - getPaddingBottom()-40;
+        mTop = getPaddingTop()+350;
+        mRigth = w - getPaddingRight();
+
     }
 /*
     @Override
@@ -70,7 +75,7 @@ public class BarrasAgrupado extends View{
         height=MeasureSpec.getSize(heightMeasureSpec);
         setMeasuredDimension(width,height);
     }
-*/
+
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
@@ -120,13 +125,13 @@ public class BarrasAgrupado extends View{
 
         return true;
     }
-
+*/
     private void init(){
 
-        mPaintEjeX = new Paint(Paint.ANTI_ALIAS_FLAG);
+        mPaintEjeX = new Paint();
         mPaintEjeX.setColor(Color.BLACK);
-        mPaintEjeX.setStyle(Paint.Style.FILL_AND_STROKE);
-        mPaintEjeX.setStrokeWidth(2F);
+        mPaintEjeX.setStyle(Paint.Style.STROKE);
+        mPaintEjeX.setStrokeWidth(10F);
 
         mPaintEjeY = new Paint(Paint.ANTI_ALIAS_FLAG);
         mPaintEjeY.setColor(getResources().getColor(R.color.negro));
@@ -163,17 +168,45 @@ public class BarrasAgrupado extends View{
 
     private void pintarEjes(Canvas canvas) {
 
-        ejeX(canvas);
+        ejeXY(canvas);
 
-        ejeY(canvas);
 
-        anios(canvas);
 
-        barras(canvas);
+        //ejeX(canvas);
 
-        empresas(canvas);
+        //ejeY(canvas);
+
+        //anios(canvas);
+
+        //barras(canvas);
+
+        //empresas(canvas);
+
+
 
     }
+
+    private void ejeXY(Canvas canvas) {
+
+        canvas.drawLine(mLeft, mBottom, mLeft, mTop,
+                mPaintEjeX);
+        canvas.drawLine(mLeft, mBottom, mRigth, mBottom,
+                mPaintEjeX);
+
+        float guideLineSpacing = (mBottom - mTop) / 10f;
+
+        float y;
+        int cont = 100;
+        for (int i = 0; i <= 10; i++) {
+            y = mTop + i * guideLineSpacing;
+            canvas.drawLine(mLeft, y, mRigth, y, mPaintEjeY);
+            canvas.drawText(String.valueOf(cont),mLeft-80,y+10,mPaintNumerosY);
+            cont-=10;
+        }
+
+    }
+
+
 
     private void empresas(Canvas canvas) {
         int cont=0;
