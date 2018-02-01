@@ -45,5 +45,6 @@ public class Barra {
 
     public void setValor(int valor) {
         this.valor = valor;
+
     }
 }
