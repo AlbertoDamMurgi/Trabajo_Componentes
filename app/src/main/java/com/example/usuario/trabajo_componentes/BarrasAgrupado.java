@@ -168,6 +168,8 @@ public class BarrasAgrupado extends View{
 
     private void pintarEjes(Canvas canvas) {
 
+
+
         ejeXY(canvas);
 
 
