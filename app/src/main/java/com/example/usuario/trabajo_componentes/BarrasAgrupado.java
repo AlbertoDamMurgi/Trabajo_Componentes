@@ -172,7 +172,7 @@ public class BarrasAgrupado extends View{
 
         ejeXY(canvas);
 
-
+        pintarBarras(canvas);
 
         //ejeX(canvas);
 
@@ -188,6 +188,37 @@ public class BarrasAgrupado extends View{
 
     }
 
+    private float calcularTop(float valor){
+
+        float altura = mBottom;
+        float espacio = (mBottom - mTop) / 10f;
+
+        altura=altura-(espacio*valor)/(10f);
+
+        return altura;
+    }
+
+    private void pintarBarras(Canvas canvas) {
+
+
+        float espacioderecha = (mRigth-mLeft)/5f;
+
+        float columnWidth = ((mRigth-mLeft)/5f)/3;
+
+
+
+        for (int i = 0; i < 5; i++) {
+
+            canvas.drawRect(mLeft+(i*espacioderecha), calcularTop(Bd.grupos.get(i).getBarras()[0].getValor()), mLeft+columnWidth+(i*espacioderecha), mBottom, barra1);
+            canvas.drawRect(mLeft+(i*espacioderecha)+columnWidth, calcularTop(Bd.grupos.get(i).getBarras()[1].getValor()), mLeft+columnWidth*2+(i*espacioderecha), mBottom, barra2);
+            canvas.drawRect(mLeft+(i*espacioderecha)+columnWidth*2, calcularTop(Bd.grupos.get(i).getBarras()[2].getValor()), mLeft+columnWidth*3+(i*espacioderecha), mBottom, barra3);
+
+
+        }
+
+
+    }
+
     private void ejeXY(Canvas canvas) {
 
         canvas.drawLine(mLeft, mBottom, mLeft, mTop,
@@ -195,15 +226,26 @@ public class BarrasAgrupado extends View{
         canvas.drawLine(mLeft, mBottom, mRigth, mBottom,
                 mPaintEjeX);
 
-        float guideLineSpacing = (mBottom - mTop) / 10f;
+        float espacio = (mBottom - mTop) / 10f;
 
         float y;
         int cont = 100;
         for (int i = 0; i <= 10; i++) {
-            y = mTop + i * guideLineSpacing;
-            canvas.drawLine(mLeft, y, mRigth, y, mPaintEjeY);
-            canvas.drawText(String.valueOf(cont),mLeft-80,y+10,mPaintNumerosY);
+            y = mTop + i * espacio;
+            //canvas.drawLine(mLeft, y, mRigth, y, mPaintEjeY);
+            canvas.drawText(String.valueOf(cont),mLeft-90,y+10,mPaintNumerosY);
             cont-=10;
+        }
+
+        float espacioderecha = (mRigth-mLeft)/5f;
+
+        for (int i = 0; i <= 5; i++) {
+            y = mLeft + i * espacioderecha;
+            canvas.drawLine(y, mTop, y, mBottom, mPaintEjeY);
+            if(i<5) {
+                canvas.drawText(String.valueOf(Bd.grupos.get(i).getAnio()), y + 80, mTop, mPaintNumerosY);
+            }
+
         }
 
     }
@@ -277,16 +319,7 @@ public class BarrasAgrupado extends View{
 
     }
 
-    private float calcularTop(float valor){
 
-       float altura= height - getPaddingBottom() - 60;
-
-
-        altura=altura-((width/6)*valor)/(20);
-
-
-        return altura;
-    }
 
     private void ejeX(Canvas canvas) {
 
