@@ -87,14 +87,35 @@ public class BarrasAgrupado extends View{
     */
 
 
+    private void cambiarValores(final int finalI, final int s){
+
+        int aux,anio;
+        String nombre;
+
+        aux = Bd.grupos.get(finalI).getBarras()[s].getValor();
+        nombre = Bd.grupos.get(0).getBarras()[s].getNombre();
+        anio = Bd.grupos.get(finalI).getAnio();
+
+        Snackbar.make(getRootView(),"Compañia "+nombre+" en el año "+anio+" valor: "+aux, Snackbar.LENGTH_LONG)
+                .setAction("Cambiar Valor", new OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+
+                        pedirnuevoValor(finalI,s);
+
+                        invalidate();
+                    }
+                }).show();
+
+    }
+
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
         View view = getRootView();
         int x= (int) event.getX();
         int y = (int) event.getY();
-        int aux,anio;
-        String nombre;
+
         int eventaction = event.getAction();
          /*
          Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
@@ -113,44 +134,17 @@ public class BarrasAgrupado extends View{
                 for (int i = 0; i < 5; i++) {
 
                     if(x>mLeft+(i*espacioderecha)&&x<mLeft+columnWidth+(i*espacioderecha)&&y>mTop){
-
-                        aux = Bd.grupos.get(i).getBarras()[0].getValor();
-                        nombre = Bd.grupos.get(0).getBarras()[0].getNombre();
-                        anio = Bd.grupos.get(i).getAnio();
-
-                        final int finalI = i;
-                        Snackbar.make(view,"Compañia "+nombre+" en el año "+anio+" valor: "+aux, Snackbar.LENGTH_LONG)
-                                .setAction("Cambiar Valor", new OnClickListener() {
-                                    @Override
-                                    public void onClick(View v) {
-                                        pedirnuevoValor();
-                                        Bd.grupos.get(finalI).getBarras()[0].setValor(Integer.parseInt(mValor));
-                                        Toast.makeText(getContext(),"asdasd",Toast.LENGTH_LONG).show();
-                                        invalidate();
-                                    }
-                                }).show();
-
-                        /* Bd.grupos.get(i).getBarras()[0].setValor(88);
-                                        Toast.makeText(getContext(),"asdasd",Toast.LENGTH_LONG).show();
-                                        invalidate();*/
+                        int s = 0;
+                        cambiarValores(i,s);
 
                     }else if(x>mLeft+(i*espacioderecha)+columnWidth&&x<mLeft+columnWidth*2+(i*espacioderecha)&&y>mTop){
-
-                        aux = Bd.grupos.get(i).getBarras()[1].getValor();
-                        nombre = Bd.grupos.get(0).getBarras()[1].getNombre();
-                        anio = Bd.grupos.get(i).getAnio();
-                        Snackbar.make(getRootView(),"Compañia "+nombre+" en el año "+anio+" valor: "+aux, Snackbar.LENGTH_LONG)
-                                .setAction("Action", null).show();
-
+                         int s = 1;
+                         cambiarValores(i,s);
 
                     }else if(x>mLeft+(i*espacioderecha)+columnWidth*2&&x<mLeft+columnWidth*3+(i*espacioderecha)&&y>mTop){
+                        int s = 2;
 
-                        aux = Bd.grupos.get(i).getBarras()[2].getValor();
-                        nombre = Bd.grupos.get(0).getBarras()[2].getNombre();
-                        anio = Bd.grupos.get(i).getAnio();
-                        Snackbar.make(getRootView(),"Compañia "+nombre+" en el año "+anio+" valor: "+aux, Snackbar.LENGTH_LONG)
-                                .setAction("Action", null).show();
-
+                        cambiarValores(i,s);
                     }
 
                 }
@@ -163,34 +157,42 @@ public class BarrasAgrupado extends View{
 
 
 
+
+
         }
 
 
         return true;
     }
 
-    private void pedirnuevoValor() {
+    private void pedirnuevoValor(final int i, final int s) {
 
 
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-        builder.setTitle("Title");
+        builder.setTitle("Introduzca un nuevo valor.");
 
-// Set up the input
+
         final EditText input = new EditText(getContext());
-// Specify the type of input expected; this, for example, sets the input as a password, and will mask the text
-        input.setInputType(InputType.TYPE_CLASS_NUMBER);
+
+        input.setInputType(InputType.TYPE_CLASS_NUMBER|InputType.TYPE_NUMBER_VARIATION_NORMAL);
         builder.setView(input);
 
-// Set up the buttons
-        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+
+        builder.setPositiveButton("Cambiar", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
 
                 mValor = input.getText().toString();
+                int valor = Integer.parseInt(mValor);
+                if(valor<0||valor>100){
+                    Toast.makeText(getContext(),"Debes introducir un valor entre 0 y 100",Toast.LENGTH_LONG).show();
+                    return;
+                }
+                Bd.grupos.get(i).getBarras()[s].setValor(Integer.parseInt(mValor));
                 invalidate();
             }
         });
-        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+        builder.setNegativeButton("Cancelar", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 dialog.cancel();
@@ -199,7 +201,6 @@ public class BarrasAgrupado extends View{
 
         builder.show();
 
-        invalidate();
 
 
 
