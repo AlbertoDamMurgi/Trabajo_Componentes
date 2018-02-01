@@ -1,5 +1,7 @@
 package com.example.usuario.trabajo_componentes;
 
+import android.animation.Animator;
+import android.animation.ValueAnimator;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.res.TypedArray;
@@ -18,6 +20,7 @@ import android.util.AttributeSet;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.animation.AccelerateInterpolator;
 import android.widget.EditText;
 import android.widget.Toast;
 
@@ -25,12 +28,15 @@ import android.widget.Toast;
  * Created by usuario on 22/01/18.
  */
 
-public class BarrasAgrupado extends View{
+public class BarrasAgrupado extends View implements ValueAnimator.AnimatorUpdateListener {
 
     private Paint mPaintEjeX,mPaintEjeY,mPaintNumerosY,barra1,barra2,barra3,mPaintEmpresas;
     private int width,height;
     private float mLeft,mBottom,mTop,mRigth;
     private String mValor="2";
+    private ValueAnimator mAnimator;
+    private float mAnimatingFraction;
+
     public BarrasAgrupado(Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
         TypedArray a = context.getTheme().obtainStyledAttributes(
@@ -39,6 +45,8 @@ public class BarrasAgrupado extends View{
         );
 
         init();
+
+
 
         try {
 
@@ -103,7 +111,8 @@ public class BarrasAgrupado extends View{
 
                         pedirnuevoValor(finalI,s);
 
-                        invalidate();
+
+                        //invalidate();
                     }
                 }).show();
 
@@ -136,15 +145,17 @@ public class BarrasAgrupado extends View{
                     if(x>mLeft+(i*espacioderecha)&&x<mLeft+columnWidth+(i*espacioderecha)&&y>mTop){
                         int s = 0;
                         cambiarValores(i,s);
-
+                        invalidate();
                     }else if(x>mLeft+(i*espacioderecha)+columnWidth&&x<mLeft+columnWidth*2+(i*espacioderecha)&&y>mTop){
                          int s = 1;
                          cambiarValores(i,s);
 
+                        invalidate();
                     }else if(x>mLeft+(i*espacioderecha)+columnWidth*2&&x<mLeft+columnWidth*3+(i*espacioderecha)&&y>mTop){
                         int s = 2;
 
                         cambiarValores(i,s);
+                        invalidate();
                     }
 
                 }
@@ -189,6 +200,7 @@ public class BarrasAgrupado extends View{
                     return;
                 }
                 Bd.grupos.get(i).getBarras()[s].setValor(Integer.parseInt(mValor));
+                mAnimator.start();
                 invalidate();
             }
         });
@@ -202,6 +214,8 @@ public class BarrasAgrupado extends View{
         builder.show();
 
 
+
+        invalidate();
 
 
     }
@@ -244,6 +258,24 @@ public class BarrasAgrupado extends View{
         barra3.setColor(getResources().getColor(Bd.grupos.get(0).getBarras()[2].getColor()));
         barra3.setStyle(Paint.Style.FILL_AND_STROKE);
 
+        mAnimator = new ValueAnimator();
+        mAnimator.setDuration(400);
+        mAnimator.setInterpolator(new AccelerateInterpolator());
+        mAnimator.addUpdateListener(this);
+        mAnimator.setFloatValues(0f,1f);
+
+        mAnimator.start();
+
+    }
+
+
+    @Override
+    public void onAnimationUpdate(ValueAnimator animation) {
+
+        mAnimatingFraction = animation.getAnimatedFraction();
+
+        invalidate();
+
     }
 
     private void pintarEjes(Canvas canvas) {
@@ -254,6 +286,7 @@ public class BarrasAgrupado extends View{
 
         pintarBarras(canvas);
 
+        empresas(canvas);
 
     }
 
@@ -262,7 +295,7 @@ public class BarrasAgrupado extends View{
         float altura = mBottom;
         float espacio = (mBottom - mTop) / 10f;
 
-        altura=altura-(espacio*valor)/(10f);
+        altura=altura-(espacio*valor*mAnimatingFraction)/(10f);
 
         return altura;
 
@@ -322,69 +355,31 @@ public class BarrasAgrupado extends View{
     }
 
 
-
     private void empresas(Canvas canvas) {
-        int cont=0;
+
+        float espacio = width/3;
 
         for (int i = 0; i < 3; i++) {
             if(i==0){
-                canvas.drawRect(150, 150+cont, 80, 80+cont,barra1);
+                canvas.drawRect(150, 150, 80, 80,barra1);
                 mPaintEmpresas.setColor(getResources().getColor(Bd.grupos.get(0).getBarras()[i].getColor()));
-                canvas.drawText(Bd.grupos.get(0).getBarras()[i].getNombre(),180,130+cont,mPaintEmpresas);
+                canvas.drawText(Bd.grupos.get(0).getBarras()[i].getNombre(),180,130,mPaintEmpresas);
             }else if(i==1) {
                 mPaintEmpresas.setColor(getResources().getColor(Bd.grupos.get(0).getBarras()[i].getColor()));
-                canvas.drawRect(150, 150 + cont, 80, 80 + cont, barra2);
-                canvas.drawText(Bd.grupos.get(0).getBarras()[i].getNombre(),180,130+cont,mPaintEmpresas);
+                canvas.drawRect(150+espacio, 150 , 80+espacio, 80, barra2);
+                canvas.drawText(Bd.grupos.get(0).getBarras()[i].getNombre(),180+espacio,130,mPaintEmpresas);
             }else{
                 mPaintEmpresas.setColor(getResources().getColor(Bd.grupos.get(0).getBarras()[i].getColor()));
-                canvas.drawRect(150, 150 + cont, 80, 80 + cont, barra3);
-                canvas.drawText(Bd.grupos.get(0).getBarras()[i].getNombre(),180,130+cont,mPaintEmpresas);
+                canvas.drawRect(150+espacio*2, 150 , 80+espacio*2, 80 , barra3);
+                canvas.drawText(Bd.grupos.get(0).getBarras()[i].getNombre(),180+espacio*2,130,mPaintEmpresas);
             }
-            cont+=150;
+
         }
 
 
 
     }
 
-    private void barras(Canvas canvas) {
-        int espacio = width/6;
-        int cont = 0;
-        Log.e("pintando barras","pintando barras");
-        for (int i = 0; i < width ; i=espacio+i) {
-
-            if(cont<5) {
-                canvas.drawRect(getPaddingLeft() + 150 + i,calcularTop(Bd.grupos.get(cont).getBarras()[0].getValor()), getPaddingLeft() + 150 + espacio / 3 + i, height - getPaddingBottom() - 60, barra1);
-                canvas.drawRect(getPaddingLeft() + 150 + (espacio / 3) + i, calcularTop(Bd.grupos.get(cont).getBarras()[1].getValor()), getPaddingLeft() + 150 + (espacio / 3) * 2 + i, height - getPaddingBottom() - 60, barra2);
-                canvas.drawRect(getPaddingLeft() + 150 + (espacio / 3) * 2 + i, calcularTop(Bd.grupos.get(cont).getBarras()[2].getValor()), getPaddingLeft() + 150 + (espacio) + i, height - getPaddingBottom() - 60, barra3);
-            }
-            cont++;
-        }
-
-       // top de la linea de la y getPaddingTop() + (width / 2)
-
-        //bot de la y            height - getPaddingBottom() - 60
-    }
-
-    private void anios(Canvas canvas) {
-        int cont = 0;
-
-        int total = width/6;
-        int nuevotop = getPaddingTop() + (width / 2);
-
-        Log.e("total",String.valueOf(total));
-
-
-
-        for (int i = 0; i < width ; i=total+i) {
-            if(cont<5) {
-                canvas.drawText(String.valueOf(Bd.grupos.get(cont).getAnio()), total + i-20, nuevotop, mPaintNumerosY);
-                cont++;
-            }
-                //canvas.drawLine(getPaddingLeft() + 150 + i, getPaddingTop() + (width / 2), getPaddingLeft() + 150 + i, height - getPaddingBottom() - 60, mPaintEjeY);
-            }
-
-
 
 
 
@@ -392,25 +387,9 @@ public class BarrasAgrupado extends View{
 
 
 
-    private void ejeX(Canvas canvas) {
 
-        canvas.drawLine(getPaddingLeft()+150,height-getPaddingBottom()-60,width-getPaddingRight()-90,height-getPaddingBottom()-60,mPaintEjeX);
 
-    }
 
-    private void ejeY(Canvas canvas) {
 
-        canvas.drawLine(getPaddingLeft()+150,getPaddingTop()+(width/2),getPaddingLeft()+150,height-getPaddingBottom()-60,mPaintEjeY);
-        int espacio = width/6;
-        int cont = 0;
-        for (int i = 0; i < width ; i=espacio+i) {
-            if(cont<=100) {
-                canvas.drawText(String.valueOf(cont), getPaddingLeft() + 20, height - getPaddingBottom() - i - 60, mPaintNumerosY);
-                canvas.drawLine(getPaddingLeft() + 150 + i, getPaddingTop() + (width / 2), getPaddingLeft() + 150 + i, height - getPaddingBottom() - 60, mPaintEjeY);
-            }
-            cont+=20;
 
-        }
 
-    }
-}
