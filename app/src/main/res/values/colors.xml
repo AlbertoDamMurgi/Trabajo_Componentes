@@ -7,4 +7,6 @@
     <color name="azul">#894fcf</color>
     <color name="verde">#05ea7b</color>
     <color name="negro">#000000</color>
+    <color name="blanco">#ffffff</color>
+    <color name="fondo_dialogo">#96252323</color>
 </resources>

@@ -179,12 +179,12 @@ public class BarrasAgrupado extends View implements ValueAnimator.AnimatorUpdate
     private void pedirnuevoValor(final int i, final int s) {
 
 
-        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+        AlertDialog.Builder builder = new AlertDialog.Builder(getContext(),R.style.peticion_de_datos);
         builder.setTitle("Introduzca un nuevo valor.");
-
+        builder.setMessage("Introduza un valor entre 0 y 100");
 
         final EditText input = new EditText(getContext());
-
+        input.setTextColor(getResources().getColor(R.color.blanco));
         input.setInputType(InputType.TYPE_CLASS_NUMBER|InputType.TYPE_NUMBER_VARIATION_NORMAL);
         builder.setView(input);
 
