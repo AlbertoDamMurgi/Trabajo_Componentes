@@ -64,7 +64,7 @@ public class BarrasAgrupado extends View implements ValueAnimator.AnimatorUpdate
 
         pintarEjes(canvas);
 
-        //barras(canvas);
+
     }
 
 
@@ -82,17 +82,6 @@ public class BarrasAgrupado extends View implements ValueAnimator.AnimatorUpdate
     }
 
 
-
-    /*
-        @Override
-        protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-            super.onMeasure(widthMeasureSpec, heightMeasureSpec);
-            width=MeasureSpec.getSize(widthMeasureSpec);
-            height=MeasureSpec.getSize(heightMeasureSpec);
-            setMeasuredDimension(width,height);
-        }
-
-    */
 
 
     private void cambiarValores(final int finalI, final int s){
@@ -114,10 +103,58 @@ public class BarrasAgrupado extends View implements ValueAnimator.AnimatorUpdate
 
                         //invalidate();
                     }
-                }).show();
+                })
+
+                .show();
 
     }
 
+
+    private void cambiarNombre(int s){
+
+            pedirNombre(s);
+    }
+
+
+    private void pedirNombre(final int s){
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(getContext(),R.style.peticion_de_datos);
+        builder.setTitle("Cambiar Nombre.");
+        builder.setMessage("Introduza un nuevo nombre para esta empresa");
+
+        final EditText input = new EditText(getContext());
+        input.setTextColor(getResources().getColor(R.color.blanco));
+        input.setInputType(InputType.TYPE_CLASS_TEXT);
+        builder.setView(input);
+
+
+        builder.setPositiveButton("Cambiar", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+
+                mValor = input.getText().toString();
+
+
+                Bd.grupos.get(0).getBarras()[s].setNombre(mValor);
+                mAnimator.start();
+                invalidate();
+            }
+        });
+        builder.setNegativeButton("Cancelar", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.cancel();
+            }
+        });
+
+        builder.show();
+
+
+
+        invalidate();
+
+
+    }
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
@@ -126,10 +163,7 @@ public class BarrasAgrupado extends View implements ValueAnimator.AnimatorUpdate
         int y = (int) event.getY();
 
         int eventaction = event.getAction();
-         /*
-         Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-         * */
+
         switch (eventaction){
 
             case MotionEvent.ACTION_DOWN:
@@ -138,9 +172,47 @@ public class BarrasAgrupado extends View implements ValueAnimator.AnimatorUpdate
 
                 float columnWidth = ((mRigth-mLeft)/5f)/3;
 
+                float espacio = width/3;
+
+
+                    if(x>180&&x<80+espacio&&y<150){
+                        int s = 0;
+                        cambiarNombre(s);
+
+                    }else if(x>180+espacio&&x<80+espacio*2&&y<150){
+                        int s = 1;
+                        cambiarNombre(s);
+                    }else if(x>180+espacio*2&&){
+                        int s = 2;
+                        cambiarNombre(s);
+
+                    }
+
+                    /*
+
+
+                     canvas.drawRect(150, 150, 80, 80,barra1);
+                mPaintEmpresas.setColor(getResources().getColor(Bd.grupos.get(0).getBarras()[i].getColor()));
+                canvas.drawText(Bd.grupos.get(0).getBarras()[i].getNombre(),180,130,mPaintEmpresas);
+
+                    else if(i==1) {
+                        mPaintEmpresas.setColor(getResources().getColor(Bd.grupos.get(0).getBarras()[i].getColor()));
+                        canvas.drawRect(150+espacio, 150 , 80+espacio, 80, barra2);
+                        canvas.drawText(Bd.grupos.get(0).getBarras()[i].getNombre(),180+espacio,130,mPaintEmpresas);
+                    }else{
+                        mPaintEmpresas.setColor(getResources().getColor(Bd.grupos.get(0).getBarras()[i].getColor()));
+                        canvas.drawRect(150+espacio*2, 150 , 80+espacio*2, 80 , barra3);
+                        canvas.drawText(Bd.grupos.get(0).getBarras()[i].getNombre(),180+espacio*2,130,mPaintEmpresas);
+                    }
+*/
+
+
+
 
 
                 for (int i = 0; i < 5; i++) {
+
+
 
                     if(x>mLeft+(i*espacioderecha)&&x<mLeft+columnWidth+(i*espacioderecha)&&y>mTop){
                         int s = 0;
@@ -307,15 +379,15 @@ public class BarrasAgrupado extends View implements ValueAnimator.AnimatorUpdate
 
         float espacioderecha = (mRigth-mLeft)/5f;
 
-        float columnWidth = ((mRigth-mLeft)/5f)/3;
+        float columnWidth = (((mRigth-mLeft)/5f)/3)-5;
 
 
 
         for (int i = 0; i < 5; i++) {
 
-            canvas.drawRect(mLeft+(i*espacioderecha), calcularTop(Bd.grupos.get(i).getBarras()[0].getValor()), mLeft+columnWidth+(i*espacioderecha), mBottom, barra1);
-            canvas.drawRect(mLeft+(i*espacioderecha)+columnWidth, calcularTop(Bd.grupos.get(i).getBarras()[1].getValor()), mLeft+columnWidth*2+(i*espacioderecha), mBottom, barra2);
-            canvas.drawRect(mLeft+(i*espacioderecha)+columnWidth*2, calcularTop(Bd.grupos.get(i).getBarras()[2].getValor()), mLeft+columnWidth*3+(i*espacioderecha), mBottom, barra3);
+            canvas.drawRect(mLeft+(i*espacioderecha)+5, calcularTop(Bd.grupos.get(i).getBarras()[0].getValor()), mLeft+columnWidth+(i*espacioderecha), mBottom-4, barra1);
+            canvas.drawRect(mLeft+(i*espacioderecha)+5+columnWidth, calcularTop(Bd.grupos.get(i).getBarras()[1].getValor()), mLeft+columnWidth*2+(i*espacioderecha), mBottom-4, barra2);
+            canvas.drawRect(mLeft+(i*espacioderecha)+5+columnWidth*2, calcularTop(Bd.grupos.get(i).getBarras()[2].getValor()), mLeft+columnWidth*3+(i*espacioderecha), mBottom-4, barra3);
 
 
         }
@@ -336,7 +408,7 @@ public class BarrasAgrupado extends View implements ValueAnimator.AnimatorUpdate
         int cont = 100;
         for (int i = 0; i <= 10; i++) {
             y = mTop + i * espacio;
-            //canvas.drawLine(mLeft, y, mRigth, y, mPaintEjeY);
+
             canvas.drawText(String.valueOf(cont),mLeft-90,y+10,mPaintNumerosY);
             cont-=10;
         }
