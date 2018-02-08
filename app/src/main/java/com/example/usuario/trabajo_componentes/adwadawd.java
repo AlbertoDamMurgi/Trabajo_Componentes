@@ -5,5 +5,5 @@ package com.example.usuario.trabajo_componentes;
  */
 
 public class adwadawd {
-
+int a;
 }
